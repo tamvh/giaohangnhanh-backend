@@ -1,0 +1,193 @@
+<div id="wrapper">
+    <div class="container body">
+        <div class="main_container">
+            <div ng-include src="loadSidebarTemplate"></div> 
+            <!-- top -->
+            <div ng-include src="loadHeaderTemplate"></div> 
+            <!-- main content -->
+            <div class="right_col" role="main">                     
+                <div class="">                        
+                    <div class="row">
+                        <div class="x_panel ">
+                            <div class="x_content"> 
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                        <div class="x_content">
+                                            <div class="dashboard-widget-content">
+                                                <div class="hidden-small">
+                                                    <h2 class="line_30">DANH SÁCH TỦ</h2>
+
+                                                    <table class="countries_list">
+                                                        <tbody>
+                                                            <tr ng-repeat = "cabinet in listcabinet" ng-click = "selectbox(cabinet)">
+                                                                <td>
+                                                                    <div ng-if='cabinet.active === 1' style="color:red;">
+                                                                        {{cabinet.name}}
+                                                                    </div>
+                                                                    <div ng-if='cabinet.active === 0'>
+                                                                        {{cabinet.name}}
+                                                                    </div>
+                                                                </td>
+                                                                <td class="fs15 fw700 text-right">
+                                                                    <div ng-if='cabinet.active === 1' style="color:red;">
+                                                                        >>
+                                                                    </div>
+                                                                    <div ng-if='cabinet.active === 0'>
+                                                                        
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                        <div class="row" >
+                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <label style="color: white;"> Từ khoá tìm kiếm</label>
+                                                <input  class="form-control" ng-model="itemNameSearch" type="text" name="item_name_filter" placeholder="Nhập từ khoá tìm kiếm" />    
+                                            </div>                                    
+                                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                                <br>
+                                                <button id="searchBtn" type="submit" class="btn btn-warning btn-circle btn-lg" ng-click="search()"><i class="fa fa-search"></i> </button>
+                                                <button type="button" class="btn btn-success btn-circle btn-lg" ng-click="openPopupAddItem()"><i class="fa fa-plus"></i> </button>
+                                                <button type="button" ng-click="deleteItems()" class="btn btn-danger btn-circle btn-lg"><i class="fa fa-times" ></i> </button>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover table-condensed table-striped jambo_table">
+                                                <thead>
+                                                    <tr>                
+                                                        <th style="width: 50px;"><input style="display:none;" type="checkbox" name="chkAll" ></th>
+                                                        <th class="col-md-1 col-xs-1 col-sm-1">STT</th>
+                                                        <th class="col-md-5 col-xs-5 col-sm-5">Nhãn</th>
+                                                        <th class="col-md-2 col-xs-2 col-sm-2">Trạng thái</th>                                          
+                                                        <th class="col-md-3 col-xs-3 col-sm-3">Time Lock</th>  
+                                                        <th class="col-md-1 col-xs-1 col-sm-1"></th>  
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="box in listbox | filter:itemNameSearch">
+                                                        <td style="width: 50px;"><input type="checkbox" name="table_recorddelete_selecteds" ng-model="box.delete_selected"></td>
+                                                        <td class="col-md-1 col-xs-1 col-sm-1">{{ $index+1 }}</td>
+                                                        <td class="col-md-5 col-xs-5 col-sm-5">{{ box.label }}</td>
+                                                        <td class="col-md-2 col-xs-2 col-sm-2">
+                                                            <div ng-if='box.status === 0' style="color:#009966;">
+                                                                Đang trống
+                                                            </div>
+                                                            <div ng-if='box.status === 1'>
+                                                                Đã có hàng
+                                                            </div>
+                                                        </td>
+                                                        <td class="col-md-3 col-xs-3 col-sm-3">{{ box.locktime }}</td>
+                                                        <td class="col-md-1 col-xs-1 col-sm-1">
+                                                            <div ng-click = "openPopupEditBox(box)">
+                                                                <i class="fa fa-edit"></i>
+                                                            </div>  
+                                                        </td>  
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center" ng-show="listbox.length === 0">
+                                                            <p  style="color:red;">Không có box nào</p>                    
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>  
+                                            </table>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div> 
+        </div>        
+    </div>    
+</div>
+<script type="text/ng-template" id="PopupAddBox.html">
+    <form name="addForm">
+    <div class="modal-header">
+    <h3 class="modal-title">Thêm thông tin Box</h3>
+    </div>
+    <div class="modal-body">
+    <div class="form-group">
+    <div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-3">
+    <label>Nhãn:</label> 
+    </div>
+    <div class="col-md-8 col-sm-8 col-xs-8">
+    <input type="text" name="label" class="form-control" ng-model="newItem.label">
+    <span class="red" ng-show="errItemIsNull">Không được để trống. Vui lòng nhập lại</span>
+    </div>
+    </div>                                             
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-3">
+    <label>Thông tin đính kèm:</label> 
+    </div>
+    <div class="col-md-8 col-sm-8 col-xs-8">
+    <input type="text" name="attacheddata" class="form-control" ng-model="newItem.attacheddata">
+    </div>
+    </div>                                             
+    </div>
+    </div>
+    <div class="modal-footer form-group">
+    <div class="row">
+    <div class="col-md-5 col-xs-5 col-sm-5"><p style="color:red; font-style: italic; margin-top:5px;"></p>
+    </div>
+    <div class="col-md-7 col-xs-7 col-sm-7">
+    <button class="btn btn-primary" type="submit" ng-click="ok()">Lưu</button>
+    <button class="btn btn-warning" type="submit" ng-click="cancel()">Đóng</button>
+    </div>
+    </div>
+    </div>
+    </form>
+</script>
+
+
+<script type="text/ng-template" id="PopupEditBox.html">
+    <form name="editForm">
+    <div class="modal-header">
+    <h3 class="modal-title">Chỉnh sửa thông tin Box</h3>
+    </div>
+    <div class="modal-body">
+    <div class="form-group">
+    <div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-3">
+    <label>Nhãn:</label> 
+    </div>
+    <div class="col-md-8 col-sm-8 col-xs-8">
+    <input type="text" name="label" class="form-control" ng-model="editItem.label">
+    <span class="red" ng-show="errItemIsNull">Không được để trống. Vui lòng nhập lại</span>
+    </div>
+    </div>                                             
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-3">
+    <label>Thông tin đính kèm:</label> 
+    </div>
+    <div class="col-md-8 col-sm-8 col-xs-8">
+    <input type="text" name="attacheddata" class="form-control" ng-model="editItem.attacheddata">
+    </div>
+    </div>                                             
+    </div>
+    </div>
+    <div class="modal-footer form-group">
+    <div class="row">
+    <div class="col-md-5 col-xs-5 col-sm-5"><p style="color:red; font-style: italic; margin-top:5px;"></p>
+    </div>
+    <div class="col-md-7 col-xs-7 col-sm-7">
+    <button class="btn btn-primary" type="submit" ng-click="ok()">Lưu</button>
+    <button class="btn btn-warning" type="submit" ng-click="cancel()">Đóng</button>
+    </div>
+    </div>
+    </div>
+    </form>
+</script>
